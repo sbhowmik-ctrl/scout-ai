@@ -14,6 +14,7 @@ import { RadarChartModal } from '@/components/RadarChartModal';
 import { AttributeSelector } from '@/components/AttributeSelector';
 import { AttributeRadarChart } from '@/components/AttributeRadarChart';
 import { PaceComparisonChart } from '@/components/PaceComparisonChart';
+import { CyberpunkBackground } from '@/components/CyberpunkBackground';
 import { searchPlayer, searchPlayerByAttribute, APIError } from '@/lib/api';
 import { SearchResponse, Player, AttributeSearchResponse } from '@/lib/types';
 
@@ -163,18 +164,57 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-cyber-black text-cyber-green font-mono">
-      {/* Header */}
-      <header className="border-b-2 border-cyber-green py-6 shadow-neon-green-sm">
-        <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-center text-cyber-green-light tracking-wider">
-            ⚽ SCOUT AI: HIDDEN GEMS
-          </h1>
-          <p className="text-center text-cyber-green mt-2 tracking-wide">
-            &gt; Discover undervalued players similar to your favorite stars_
-          </p>
-        </div>
-      </header>
+    <div className="min-h-screen bg-cyber-black text-cyber-green font-mono relative">
+      {/* 3D Animated Background */}
+      <CyberpunkBackground />
+      
+      {/* Content with higher z-index */}
+      <div className="relative z-10">
+        {/* Header */}
+        <header className="border-b-2 border-cyber-green py-6 shadow-neon-green-sm backdrop-blur-sm bg-cyber-black/80">
+          <div className="container mx-auto px-4">
+            <h1 
+              className="text-4xl md:text-5xl font-bold text-center text-cyber-green-light tracking-wider"
+              style={{
+                textShadow: `
+                  0 0 10px #00ff00,
+                  0 0 20px #00ff00,
+                  0 0 30px #00ff00,
+                  0 0 40px #00ff00,
+                  2px 2px 0px rgba(255, 0, 255, 0.8),
+                  4px 4px 0px rgba(0, 255, 255, 0.6),
+                  6px 6px 0px rgba(255, 255, 0, 0.4)
+                `,
+                transform: 'perspective(500px) rotateX(10deg)',
+                transformStyle: 'preserve-3d',
+              }}
+            >
+              <span 
+                className="inline-block animate-bounce"
+                style={{
+                  animation: 'bounce 2s infinite',
+                  display: 'inline-block',
+                  transform: 'translateZ(20px)',
+                }}
+              >
+                ⚽
+              </span>
+              {' '}
+              <span 
+                className="inline-block"
+                style={{
+                  transform: 'translateZ(30px)',
+                  display: 'inline-block',
+                }}
+              >
+                SCOUT AI: HIDDEN GEMS
+              </span>
+            </h1>
+            <p className="text-center text-cyber-green mt-2 tracking-wide">
+              &gt; Discover undervalued players similar to your favorite stars_
+            </p>
+          </div>
+        </header>
 
       {/* Search Bar - Requirement 1.1 */}
       <SearchBar onSearch={handleSearch} isLoading={isLoading} />
@@ -308,11 +348,12 @@ export default function Home() {
       )}
 
       {/* Footer */}
-      <footer className="border-t-2 border-cyber-green mt-16 py-6 shadow-neon-green-sm">
+      <footer className="border-t-2 border-cyber-green mt-16 py-6 shadow-neon-green-sm backdrop-blur-sm bg-cyber-black/80">
         <div className="container mx-auto px-4 text-center text-cyber-green text-sm tracking-wider">
           <p>&gt; SCOUT AI HIDDEN GEMS - Powered by FC 24 Data & Machine Learning_</p>
         </div>
       </footer>
+      </div>
     </div>
   );
 }

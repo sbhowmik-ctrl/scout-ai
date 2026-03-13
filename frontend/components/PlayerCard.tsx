@@ -7,7 +7,7 @@
 
 'use client';
 
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { Player } from '@/lib/types';
 
 /**
@@ -23,7 +23,7 @@ export interface PlayerCardProps {
 }
 
 /**
- * PlayerCard component with cyberpunk styling.
+ * PlayerCard component with cyberpunk styling and 3D effects.
  * 
  * Features:
  * - Displays player name, club, nation, position, overall rating (Requirement 5.1)
@@ -31,17 +31,48 @@ export interface PlayerCardProps {
  * - Handles click events for radar chart comparison
  * - Cyberpunk dark theme with green accents (Requirement 5.4)
  * - Uses React.memo for performance optimization (Requirement 10.5)
+ * - 3D hover effects for enhanced visual appeal
  */
 function PlayerCardComponent({ player, isHiddenGem = false, onSelect }: PlayerCardProps) {
+  const [rotateX, setRotateX] = useState(0);
+  const [rotateY, setRotateY] = useState(0);
+
   const handleClick = () => {
     if (onSelect) {
       onSelect(player);
     }
   };
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    const rotateXValue = ((y - centerY) / centerY) * -10;
+    const rotateYValue = ((x - centerX) / centerX) * 10;
+    
+    setRotateX(rotateXValue);
+    setRotateY(rotateYValue);
+  };
+
+  const handleMouseLeave = () => {
+    setRotateX(0);
+    setRotateY(0);
+  };
+
   return (
     <div
       onClick={handleClick}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+        transition: 'transform 0.1s ease-out',
+      }}
       className={`
         relative p-6 bg-cyber-dark-gray border-2 rounded-lg transition-all
         ${isHiddenGem 
