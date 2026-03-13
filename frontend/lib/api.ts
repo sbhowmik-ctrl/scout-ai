@@ -1,12 +1,14 @@
 /**
  * Scout AI API Client
- * 
- * Axios-based HTTP client for backend communication.
+ * * Axios-based HTTP client for backend communication.
  * Validates: Requirements 6.2, 6.4, 6.5, 9.3
  */
 
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import { SearchResponse, AttributeSearchResponse } from './types';
+
+// Define the dynamic URL for Vercel deployment vs Local testing
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 /**
  * Create Axios instance configured for Scout AI backend.
@@ -14,7 +16,7 @@ import { SearchResponse, AttributeSearchResponse } from './types';
  */
 export const createApiClient = (): AxiosInstance => {
   return axios.create({
-    baseURL: 'http://localhost:8000',
+    baseURL: BASE_URL, // Updated to use the dynamic variable
     timeout: 5000,
     headers: {
       'Content-Type': 'application/json',
@@ -49,12 +51,10 @@ export class APIError extends Error {
 
 /**
  * Search for a player and get hidden gem recommendations.
- * 
- * @param playerName - The name of the player to search for
+ * * @param playerName - The name of the player to search for
  * @returns Promise<SearchResponse> - The searched player and hidden gems
  * @throws APIError - If the request fails or times out
- * 
- * Validates:
+ * * Validates:
  * - Requirements 6.2: Uses HTTP GET method to /search/{player_name}
  * - Requirements 6.4: Timeout after 5 seconds
  * - Requirements 6.5: Handles HTTP status codes (404, 500)
@@ -132,13 +132,11 @@ export async function searchPlayer(playerName: string): Promise<SearchResponse> 
 
 /**
  * Search for players similar to a target player based on a specific attribute category.
- * 
- * @param playerName - The name of the player to search for
+ * * @param playerName - The name of the player to search for
  * @param attributeCategory - One of: pace, shooting, passing, dribbling, defending, physical
  * @returns Promise<AttributeSearchResponse> - The searched player and similar players
  * @throws APIError - If the request fails, times out, or invalid category
- * 
- * Validates:
+ * * Validates:
  * - Requirements 4.1: Uses HTTP GET method to /search/{player_name}/attribute/{category}
  * - Requirements 4.4: Handles invalid attribute category (400)
  * - Requirements 9.1: Network error handling
