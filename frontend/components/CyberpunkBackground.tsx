@@ -37,8 +37,9 @@ export function CyberpunkBackground() {
       color: string;
 
       constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
+        // Added canvas! to assure TypeScript the canvas exists
+        this.x = Math.random() * canvas!.width;
+        this.y = Math.random() * canvas!.height;
         this.z = Math.random() * 1000;
         this.size = Math.random() * 2 + 1;
         this.speedX = (Math.random() - 0.5) * 0.5;
@@ -58,12 +59,12 @@ export function CyberpunkBackground() {
         // Reset particle when it goes off screen
         if (this.z <= 0) {
           this.z = 1000;
-          this.x = Math.random() * canvas.width;
-          this.y = Math.random() * canvas.height;
+          this.x = Math.random() * canvas!.width;
+          this.y = Math.random() * canvas!.height;
         }
 
-        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+        if (this.x < 0 || this.x > canvas!.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas!.height) this.speedY *= -1;
       }
 
       draw() {
@@ -71,8 +72,8 @@ export function CyberpunkBackground() {
         
         // 3D perspective effect
         const scale = 1000 / (1000 + this.z);
-        const x2d = (this.x - canvas.width / 2) * scale + canvas.width / 2;
-        const y2d = (this.y - canvas.height / 2) * scale + canvas.height / 2;
+        const x2d = (this.x - canvas!.width / 2) * scale + canvas!.width / 2;
+        const y2d = (this.y - canvas!.height / 2) * scale + canvas!.height / 2;
         const size2d = this.size * scale;
 
         // Draw particle with glow
@@ -99,6 +100,8 @@ export function CyberpunkBackground() {
 
     // Animation loop
     const animate = () => {
+      if (!ctx || !canvas) return; // Extra safety check for the animation loop
+      
       ctx.fillStyle = 'rgba(10, 10, 10, 0.1)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 

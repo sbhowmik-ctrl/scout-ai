@@ -95,7 +95,8 @@ export async function searchPlayer(playerName: string): Promise<SearchResponse> 
       
       // Handle HTTP error responses
       const statusCode = axiosError.response.status;
-      const errorMessage = axiosError.response.data as any;
+      // FIXED: Removed "as any" and specified the exact expected error structure
+      const errorMessage = axiosError.response.data as { detail?: string };
       
       if (statusCode === 404) {
         throw new APIError(
@@ -181,7 +182,8 @@ export async function searchPlayerByAttribute(
       
       // Handle HTTP error responses
       const statusCode = axiosError.response.status;
-      const errorMessage = axiosError.response.data as any;
+      // FIXED: Removed "as any" and specified the exact expected error structure
+      const errorMessage = axiosError.response.data as { detail?: string };
       
       if (statusCode === 400) {
         throw new APIError(
