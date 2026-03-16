@@ -3,13 +3,21 @@ Scout AI Backend - FastAPI Application
 Provides API endpoints for finding hidden gem players using ML.
 """
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 from typing import Optional
+import asyncio
 import os
 from models import SearchResponse, AttributeSearchResponse
 
+limiter = Limiter(key_func=get_remote_address, default_limits=["30/minute"])
+
 app = FastAPI(title="Scout AI Hidden Gems API")
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Configure CORS for frontend communication
 # Configure CORS for frontend communication
@@ -83,20 +91,11 @@ async def health_check():
 
 
 @app.get("/search/{player_name}", response_model=SearchResponse)
-async def search_player(player_name: str) -> SearchResponse:
+@limiter.limit("10/minute")
+async def search_player(request: Request, player_name: str) -> SearchResponse:
     """
     Search for a player and return hidden gem recommendations.
-    
-    Args:
-        player_name: Name of the player to search for
-        
-    Returns:
-        SearchResponse with searched player and hidden gems
-        
-    Validates:
-    - Requirements 1.1: Return player info and up to 3 hidden gems
-    - Requirements 1.2: Return error for non-existent player
-    - Requirements 1.3: Respond within 200ms
+    Rate limited to 10 requests/minute per IP.
     """
     if ml_engine is None:
         raise HTTPException(
@@ -105,38 +104,22 @@ async def search_player(player_name: str) -> SearchResponse:
         )
     
     try:
-        result = ml_engine.find_hidden_gems(player_name)
+        result = await asyncio.to_thread(ml_engine.find_hidden_gems, player_name)
         return result
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
 
 @app.get("/search/{player_name}/attribute/{attribute_category}", response_model=AttributeSearchResponse)
+@limiter.limit("10/minute")
 async def search_player_by_attribute(
+    request: Request,
     player_name: str,
     attribute_category: str
 ) -> AttributeSearchResponse:
     """
     Search for players similar in a specific attribute category.
-    
-    Args:
-        player_name: Name of the player to search for
-        attribute_category: One of pace/shooting/passing/dribbling/defending/physical
-        
-    Returns:
-        AttributeSearchResponse with searched player and 3 similar players
-        
-    Raises:
-        HTTPException 400: Invalid attribute category
-        HTTPException 404: Player not found
-        HTTPException 503: ML engine not initialized
-        
-    Validates:
-    - Requirements 4.1: GET endpoint at /search/{player_name}/attribute/{attribute_category}
-    - Requirements 4.2: Return AttributeSearchResponse with searched player and 3 similar players
-    - Requirements 4.3: Validate attribute_category is valid
-    - Requirements 4.4: Return HTTP 400 for invalid category
-    - Requirements 9.3: Return HTTP 500 with descriptive message for backend errors
+    Rate limited to 10 requests/minute per IP.
     """
     if ml_engine is None:
         raise HTTPException(
@@ -144,7 +127,6 @@ async def search_player_by_attribute(
             detail="ML engine not initialized. Backend may still be starting up."
         )
     
-    # Validate attribute category
     valid_categories = {'pace', 'shooting', 'passing', 'dribbling', 'defending', 'physical'}
     if attribute_category.lower() not in valid_categories:
         raise HTTPException(
@@ -153,18 +135,17 @@ async def search_player_by_attribute(
         )
     
     try:
-        result = ml_engine.find_similar_by_attribute(
-            player_name, 
+        result = await asyncio.to_thread(
+            ml_engine.find_similar_by_attribute,
+            player_name,
             attribute_category.lower()
         )
         return result
     except ValueError as e:
-        # Check if it's a player not found error or other ValueError
         error_msg = str(e)
         if "not found" in error_msg.lower():
             raise HTTPException(status_code=404, detail=error_msg)
         else:
-            # Other ValueErrors are treated as server errors
             raise HTTPException(status_code=500, detail=error_msg)
 
 
