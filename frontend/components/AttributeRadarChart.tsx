@@ -206,14 +206,28 @@ export function AttributeRadarChart({
             }}
           />
           
-          {/* Tooltip on hover */}
+          {/* Tooltip on hover - sorted descending */}
           <Tooltip
-            contentStyle={{
-              backgroundColor: '#0a0a0a',
-              border: '2px solid #ff00ff',
-              borderRadius: '8px',
-              color: '#ff00ff',
-              fontFamily: 'monospace',
+            content={({ active, payload, label }) => {
+              if (!active || !payload || !payload.length) return null;
+              const sorted = [...payload].sort((a, b) => (b.value as number) - (a.value as number));
+              return (
+                <div style={{
+                  backgroundColor: '#0a0a0a',
+                  border: '2px solid #ff00ff',
+                  borderRadius: '8px',
+                  color: '#ff00ff',
+                  fontFamily: 'monospace',
+                  padding: '10px',
+                }}>
+                  <p style={{ fontWeight: 'bold', marginBottom: '6px' }}>{label}</p>
+                  {sorted.map((entry) => (
+                    <p key={entry.name} style={{ color: entry.color, margin: '2px 0' }}>
+                      {entry.name} : {entry.value}
+                    </p>
+                  ))}
+                </div>
+              );
             }}
           />
         </RechartsRadarChart>
@@ -234,26 +248,23 @@ export function AttributeRadarChart({
                 {label}
               </div>
               <div className="space-y-1">
-                {/* Searched player value */}
-                <div className="flex justify-between items-center">
-                  <span className="text-purple-400 text-sm truncate max-w-[150px]">
-                    {searchedPlayer.name}
-                  </span>
-                  <span className="text-purple-200 font-bold">
-                    {searchedPlayer.detailed_stats?.[key as keyof typeof searchedPlayer.detailed_stats] ?? 'N/A'}
-                  </span>
-                </div>
-                {/* Similar players values */}
-                {similarPlayers.map((player) => (
-                  <div key={player.name} className="flex justify-between items-center">
-                    <span className="text-gray-400 text-sm truncate max-w-[150px]">
-                      {player.name}
-                    </span>
-                    <span className="text-gray-300 font-bold">
-                      {player.detailed_stats?.[key as keyof typeof player.detailed_stats] ?? 'N/A'}
-                    </span>
-                  </div>
-                ))}
+                {/* All players sorted by descending value */}
+                {[searchedPlayer, ...similarPlayers]
+                  .map((player) => ({
+                    player,
+                    value: player.detailed_stats?.[key as keyof typeof player.detailed_stats] ?? null,
+                  }))
+                  .sort((a, b) => (b.value ?? -1) - (a.value ?? -1))
+                  .map(({ player, value }) => (
+                    <div key={player.name} className="flex justify-between items-center">
+                      <span className={`text-sm truncate max-w-[150px] ${player.name === searchedPlayer.name ? 'text-purple-400' : 'text-gray-400'}`}>
+                        {player.name}
+                      </span>
+                      <span className={`font-bold ${player.name === searchedPlayer.name ? 'text-purple-200' : 'text-gray-300'}`}>
+                        {value ?? 'N/A'}
+                      </span>
+                    </div>
+                  ))}
               </div>
             </div>
           ))}

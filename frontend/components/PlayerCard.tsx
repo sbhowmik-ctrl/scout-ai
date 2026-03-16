@@ -98,29 +98,29 @@ function PlayerCardComponent({ player, isHiddenGem = false, onSelect }: PlayerCa
       )}
 
       {/* Player Name */}
-      <h3 className="text-2xl font-bold text-cyber-green-light mb-4 tracking-wide">
+      <h3 className="text-2xl font-bold text-cyber-green-light mb-4 tracking-wide pr-28">
         &gt; {player.name}
       </h3>
 
       {/* Player Details - Requirement 5.1 */}
       <div className="space-y-2 text-cyber-green">
         <div className="flex items-center gap-2">
-          <span className="text-cyber-gray font-semibold tracking-wider">CLUB:</span>
+          <span className="text-cyber-green text-xs font-semibold tracking-wider">CLUB:</span>
           <span className="tracking-wide">{player.club}</span>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-cyber-gray font-semibold tracking-wider">NATION:</span>
+          <span className="text-cyber-green text-xs font-semibold tracking-wider">NATION:</span>
           <span className="tracking-wide">{player.nation}</span>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-cyber-gray font-semibold tracking-wider">POS:</span>
+          <span className="text-cyber-green text-xs font-semibold tracking-wider">POS:</span>
           <span className="font-mono tracking-widest">{player.position}</span>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-cyber-gray font-semibold tracking-wider">OVR:</span>
+          <span className="text-cyber-green text-xs font-semibold tracking-wider">OVR:</span>
           <span className="text-3xl font-bold text-cyber-green-light">{player.overall}</span>
         </div>
       </div>
@@ -129,27 +129,27 @@ function PlayerCardComponent({ player, isHiddenGem = false, onSelect }: PlayerCa
       <div className="mt-4 pt-4 border-t border-cyber-green-dark">
         <div className="grid grid-cols-3 gap-3 text-sm">
           <div className="text-center">
-            <div className="text-cyber-gray font-semibold tracking-wider">PAC</div>
+            <div className="text-cyber-green text-xs font-semibold tracking-wider">PAC</div>
             <div className="text-cyber-green-light font-bold text-lg">{player.stats.PAC}</div>
           </div>
           <div className="text-center">
-            <div className="text-cyber-gray font-semibold tracking-wider">SHO</div>
+            <div className="text-cyber-green text-xs font-semibold tracking-wider">SHO</div>
             <div className="text-cyber-green-light font-bold text-lg">{player.stats.SHO}</div>
           </div>
           <div className="text-center">
-            <div className="text-cyber-gray font-semibold tracking-wider">PAS</div>
+            <div className="text-cyber-green text-xs font-semibold tracking-wider">PAS</div>
             <div className="text-cyber-green-light font-bold text-lg">{player.stats.PAS}</div>
           </div>
           <div className="text-center">
-            <div className="text-cyber-gray font-semibold tracking-wider">DRI</div>
+            <div className="text-cyber-green text-xs font-semibold tracking-wider">DRI</div>
             <div className="text-cyber-green-light font-bold text-lg">{player.stats.DRI}</div>
           </div>
           <div className="text-center">
-            <div className="text-cyber-gray font-semibold tracking-wider">DEF</div>
+            <div className="text-cyber-green text-xs font-semibold tracking-wider">DEF</div>
             <div className="text-cyber-green-light font-bold text-lg">{player.stats.DEF}</div>
           </div>
           <div className="text-center">
-            <div className="text-cyber-gray font-semibold tracking-wider">PHY</div>
+            <div className="text-cyber-green text-xs font-semibold tracking-wider">PHY</div>
             <div className="text-cyber-green-light font-bold text-lg">{player.stats.PHY}</div>
           </div>
         </div>

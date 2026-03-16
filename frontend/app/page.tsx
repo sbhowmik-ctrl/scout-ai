@@ -164,12 +164,12 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-cyber-black text-cyber-green font-mono relative">
+    <div className="min-h-screen bg-cyber-black text-cyber-green font-mono relative flex flex-col">
       {/* 3D Animated Background */}
       <CyberpunkBackground />
       
       {/* Content with higher z-index */}
-      <div className="relative z-10">
+      <div className="relative z-10 flex flex-col flex-1">
         {/* Header */}
         <header className="border-b-2 border-cyber-green py-6 shadow-neon-green-sm backdrop-blur-sm bg-cyber-black/80">
           <div className="container mx-auto px-4">
@@ -299,7 +299,7 @@ export default function Home() {
             </div>
           )}
 
-          {/* Attribute Selector Section - Requirement 1.1, 10.1 */}
+          {/* Attribute Selector Section */}
           <div className="mt-12">
             <AttributeSelector
               selectedAttribute={selectedAttribute}
@@ -348,7 +348,7 @@ export default function Home() {
       )}
 
       {/* Footer */}
-      <footer className="border-t-2 border-cyber-green mt-16 py-6 shadow-neon-green-sm backdrop-blur-sm bg-cyber-black/80">
+      <footer className="border-t-2 border-cyber-green mt-auto py-6 shadow-neon-green-sm backdrop-blur-sm bg-cyber-black/80">
         <div className="container mx-auto px-4 text-center text-cyber-green text-sm tracking-wider">
           <p>&gt; SCOUT AI HIDDEN GEMS - Powered by FC 24 Data & Machine Learning_</p>
         </div>
